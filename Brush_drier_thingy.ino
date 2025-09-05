@@ -1,3 +1,13 @@
+/** logic: wew want the speed of the motor to be depending on the value
+  of the humidity. We want the device to measure the humidity
+  of the area before (for calibration). The brushes will then be inserted after calibration
+  If the humidity is higher than the original calibrated value, then the brush would go in at 
+  max speed until the final humidity is equal to or lower than original. 
+  I think it's best to just keep in highest speed always, and make the stopping of the motor fast.
+  Through this process, the LCD screen will read "Calibration underway, please wait...",
+  then, "Calibration completed, insert brushes", then "Drying your brushes...", then
+  "Brushes dried successfully :)"**/
+
 #include <RobotIRremote.h>
 #include <RobotIRremoteInt.h>
 #include <RobotIRremoteTools.h>
@@ -78,15 +88,6 @@ void loop() {
   }
        
   delay(2000);
-  /** logic: wew want the speed of the motor to be depending on the value
-  of the humidity. We want the device to measure the humidity
-  of the area before (for calibration). The brushes will then be inserted after calibration
-  If the humidity is higher than the original calibrated value, then the brush would go in at 
-  max speed until the final humidity is equal to or lower than original. 
-  I think it's best to just keep in highest speed always, and make the stopping of the motor fast.
-  Through this process, the LCD screen will read "Calibration underway, please wait...",
-  then, "Calibration completed, insert brushes", then "Drying your brushes...", then
-  "Brushes dried successfully :)"**/
 
 
   //store the last decodedRawData
