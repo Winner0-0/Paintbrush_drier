@@ -1,2 +1,2 @@
 # Paintbrush_drier
-An automated system that will aid to dry paintbrushes. I am into art, so this occurred to me whilst painting. 
+This is a prototype for a paint brush drying system. The system would measure the humidity of the surrounding area with a humidity sensor (DHT11), and log it in the value "i" (for calibration purposes, since i would be the origin), the brushes would then have to be inserted (the brushes would be in between a fan and the humidity sensor, to ensure proper airflow for proper humidity measurements), and when you press the turn on button, the motor (connected to a fan) would start drying the brushes the moist air will come in contact with the humidity sensor, which will be recording value "f." Then the system will continue until f == i.
