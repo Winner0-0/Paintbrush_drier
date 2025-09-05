@@ -1,4 +1,4 @@
-/** logic: wew want the speed of the motor to be depending on the value
+ /** logic: wew want the speed of the motor to be depending on the value
   of the humidity. We want the device to measure the humidity
   of the area before (for calibration). The brushes will then be inserted after calibration
   If the humidity is higher than the original calibrated value, then the brush would go in at 
@@ -11,6 +11,10 @@
 #include <RobotIRremote.h>
 #include <RobotIRremoteInt.h>
 #include <RobotIRremoteTools.h>
+#include <Adafruit_Sensor.h>
+#include <LiquidCrystal.h>
+#include <DHT.h>
+#include <math.h>
 
 //#include "IRremote.h"
 
@@ -18,10 +22,16 @@
 #define ENABLE 5
 #define DIRA 3
 #define DIRB 4
+//DHT11 settings
+#define DHTPIN 8
+#define DHTTYPE DHT11
+LiquidCrystal lcd(12, 11, 4, 5, 6, 7); //RS, enable, d4, d5, d6, d7
+DHT dht(DHTPIN, DHTTYPE);
 
 // make integer values that will store the inital humidity, humidity with brushes
 // when humidity with brushes = inital humidy, the device will stop 
 
+float humidity;
 int i, f;
 unsigned long dryingStart = 0;
 bool dryingComplete = false;
@@ -45,7 +55,9 @@ void setup() {
   lcd.print("Calibration underway");
   lcd.setCursor(0, 1);
   lcd.print("please wait");
-  //put here the fgets of the value of the humidity, include:
+  humidity = dht.readHumidity();
+  i = (int)round(humidity); // this is now the intial humidity value, will act as our origin value
+  delay(6000); // DHT11 reaches humidity reading within 6 seconds (data sheet)
   lcd.clear();
   lcd.setCursor(0, 0);
   lcd.print("Calibration completed!");
@@ -56,6 +68,8 @@ void setup() {
 }
 
 void loop() {
+  humidity = dht.readHumidity();
+  f = (int)round(humidity); // will get a new f value each time, i will remain unchanged
   if (irrecv.decode()){ //if signal is recieved
     if (irrecv.decodedIRData.flags){ // repeat signal if you hold the button
       irrecv.decodedIRData.decodedRawData = last_decodedRawData;
@@ -88,14 +102,5 @@ void loop() {
   }
        
   delay(2000);
-
-
-  //store the last decodedRawData
-  last_decodedRawData = irrecv.decodedIRData.decodedRawData;
-  irrecv.resume(); // receive the next value
-  digitalWrite(8, LOW);
-  digitalWrite(9, LOW);
-  digitalWrite(10, LOW);
-  digitalWrite(11, LOW);
 }
    
