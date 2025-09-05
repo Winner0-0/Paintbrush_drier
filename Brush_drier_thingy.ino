@@ -4,6 +4,7 @@
 
 //#include "IRremote.h"
 
+//Below is DC motor connections
 #define ENABLE 5
 #define DIRA 3
 #define DIRB 4
@@ -11,19 +12,22 @@
 // make integer values that will store the inital humidity, humidity with brushes
 // when humidity with brushes = inital humidy, the device will stop 
 
-int i;
+int i, f;
+unsigned long dryingStart = 0;
+bool dryingComplete = false;
+
 int receiver = 12;
 IRrecv irrecv(receiver);    // create instance of 'irrecv'
-uint32_t last_decodedRawData = 0;
+uint32_t last_decodedRawData = 0; //uses to store the last decodedRawData
+bool motorEnabled = false;
  
 void setup() {
-  //---set pin direction
   pinMode(ENABLE,OUTPUT);
   pinMode(DIRA,OUTPUT);
   pinMode(DIRB,OUTPUT);
-  irrecv.enableIRIn();
+  irrecv.enableIRIn(); //initialize the reciever
   Serial.begin(9600);
-  lcd.begin(16,2); // Initialize the LCD with 16 columns and 2 rows
+  lcd.begin(16,2); 
   lcd.print("Brush dryer system on!");
   delay(2000);
   lcd.clear();
@@ -37,19 +41,42 @@ void setup() {
   lcd.print("Calibration completed!");
   lcd.setCursor(0, 1);
   lcd.print("insert brushes");
+  delay(5000);
+  lcd.clear();
 }
 
 void loop() {
-  if (irrecv.decode()) //for remote control connections
-  {
-    if (irrecv.decodedIRData.flags)
-    {
+  if (irrecv.decode()){ //if signal is recieved
+    if (irrecv.decodedIRData.flags){ // repeat signal if you hold the button
       irrecv.decodedIRData.decodedRawData = last_decodedRawData;
     }
-    switch (irrecv.decodedIRData.decodedRawData)
+    switch (irrecv.decodedIRData.decodedRawData){
+      case 0xF30CFF00: //power button
+       motorEnabled = !motorEnabled;
+       dryingComplete = false;
+       break; //makes sure it doesn't check for other cases
+    }
   }
   
-  digitalWrite(ENABLE,LOW); // disable
+  if (motorEnabled && f != i){
+    digitalWrite(DIRA, HIGH);
+    digitalWrite(DIRB, LOW);
+    analogWrite(ENABLE, 255); //we want to have it at full speed for optimum drying
+    dryingStart = millis();
+    dryingComplete = false;
+  }else if (motorEnabled && f == i && !dryingComplete){
+    digitalWrite(ENABLE, LOW);
+    lcd.setCursor(0, 0);
+    lcd.print("Drying completed :)");
+    dryingStart = millis(); //for 10 minute timer
+    dryingComplete = true;
+  }else if(dryingComplete && millis() - dryingStart >= 600000){
+    motorEnabled = false;
+    dryingComplete = false;
+  }else if (!motorEnabled){
+    digitalWrite(Enable, LOW);
+  }
+       
   delay(2000);
   /** logic: wew want the speed of the motor to be depending on the value
   of the humidity. We want the device to measure the humidity
@@ -61,20 +88,8 @@ void loop() {
   then, "Calibration completed, insert brushes", then "Drying your brushes...", then
   "Brushes dried successfully :)"**/
 
-  // Fast stop code
-  digitalWrite(ENABLE,HIGH); //enable on
-  digitalWrite(DIRA,LOW); //one way
-  digitalWrite(DIRB,HIGH);
-  delay(3000);
-  digitalWrite(DIRA,HIGH); //fast stop
-  delay(2000);
 
-  // Full speed code
-  analogWrite(ENABLE,255); //enable on
-  digitalWrite(DIRA,HIGH); //one way
-  digitalWrite(DIRB,LOW);
-  delay(3000);
-
+  //store the last decodedRawData
   last_decodedRawData = irrecv.decodedIRData.decodedRawData;
   irrecv.resume(); // receive the next value
   digitalWrite(8, LOW);
