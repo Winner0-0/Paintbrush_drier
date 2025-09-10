@@ -21,11 +21,11 @@
 //Below is DC motor connections
 #define ENABLE 5
 #define DIRA 3
-#define DIRB 4
+#define DIRB 2
 //DHT11 settings
 #define DHTPIN 8
 #define DHTTYPE DHT11
-LiquidCrystal lcd(12, 11, 4, 5, 6, 7); //RS, enable, d4, d5, d6, d7
+LiquidCrystal lcd(12, 11, 4, 10, 6, 7); //RS, enable, d4, d5, d6, d7
 DHT dht(DHTPIN, DHTTYPE);
 
 // make integer values that will store the inital humidity, humidity with brushes
