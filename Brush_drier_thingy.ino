@@ -28,10 +28,11 @@
 LiquidCrystal lcd(13, 11, 4, 10, 6, 7); //RS, enable, d4, d5, d6, d7
 DHT dht(DHTPIN, DHTTYPE);
 
-// make integer values that will store the inital humidity, humidity with brushes
-// when humidity with brushes = inital humidy, the device will stop 
+// make integer values that will store the initial humidity, humidity with brushes
+// when humidity with brushes = initial humidity, the device will stop 
 
 float humidity;
+const float hysT = 5.0; //tolerance value in place to prevent rapid on/off from the system from fluctuations in humidity readings
 int i, f;
 unsigned long dryingStart = 0;
 bool dryingComplete = false;
@@ -82,25 +83,25 @@ void loop() {
     }
   }
   
-  if (motorEnabled && f != i){
+  if (motorEnabled && (f > i + hysT)){
     digitalWrite(DIRA, HIGH);
     digitalWrite(DIRB, LOW);
     analogWrite(ENABLE, 255); //we want to have it at full speed for optimum drying
     dryingStart = millis();
     dryingComplete = false;
-  }else if (motorEnabled && f == i && !dryingComplete){
+  }else if (motorEnabled && (f <= i) && !dryingComplete){
     digitalWrite(ENABLE, LOW);
     lcd.setCursor(0, 0);
     lcd.print("Drying completed :)");
     dryingStart = millis(); //for 10 minute timer
     dryingComplete = true;
-  }else if(dryingComplete && millis() - dryingStart >= 600000){
-    motorEnabled = false;
-    dryingComplete = false;
   }else if (!motorEnabled){
     digitalWrite(Enable, LOW);
   }
-       
+ if (dryingComplete && millis() - dryingStart >= 600000){
+    motorEnabled = false;
+    dryingComplete = false;
+ 
   delay(2000);
 }
    
