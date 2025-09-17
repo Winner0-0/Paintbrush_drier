@@ -1,11 +1,11 @@
- /** logic: wew want the speed of the motor to be depending on the value
+ /** logic: wew want the speed of the motor to depend on the value
   of the humidity. We want the device to measure the humidity
   of the area before (for calibration). The brushes will then be inserted after calibration
-  If the humidity is higher than the original calibrated value, then the brush would go in at 
-  max speed until the final humidity is equal to or lower than original. 
-  I think it's best to just keep in highest speed always, and make the stopping of the motor fast.
+  If the humidity is higher than the original calibrated value, then the fan attached to the motor will spin at 
+  max speed until the final humidity is equal to or lower than the original. 
+  I think it's best to just keep at the highest speed always, and make the stopping of the motor fast.
   Through this process, the LCD screen will read "Calibration underway, please wait...",
-  then, "Calibration completed, insert brushes", then "Drying your brushes...", then
+  then "Calibration completed, insert brushes", then "Drying your brushes...", then
   "Brushes dried successfully :)"**/
 
 #include <RobotIRremote.h>
@@ -25,7 +25,7 @@
 //DHT11 settings
 #define DHTPIN 8
 #define DHTTYPE DHT11
-LiquidCrystal lcd(12, 11, 4, 10, 6, 7); //RS, enable, d4, d5, d6, d7
+LiquidCrystal lcd(13, 11, 4, 10, 6, 7); //RS, enable, d4, d5, d6, d7
 DHT dht(DHTPIN, DHTTYPE);
 
 // make integer values that will store the inital humidity, humidity with brushes
