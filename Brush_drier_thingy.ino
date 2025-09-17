@@ -96,12 +96,12 @@ void loop() {
     dryingStart = millis(); //for 10 minute timer
     dryingComplete = true;
   }else if (!motorEnabled){
-    digitalWrite(Enable, LOW);
+    digitalWrite(ENABLE, LOW);
   }
  if (dryingComplete && millis() - dryingStart >= 600000){
     motorEnabled = false;
     dryingComplete = false;
- 
+ }
   delay(2000);
 }
    
