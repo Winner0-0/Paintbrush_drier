@@ -98,7 +98,7 @@ void loop() {
   }else if (!motorEnabled){
     digitalWrite(ENABLE, LOW);
   }
- if (dryingComplete && millis() - dryingStart >= 600000){
+ if (dryingComplete && millis() - dryingStart >= 500000){
     motorEnabled = false;
     dryingComplete = false;
  }
