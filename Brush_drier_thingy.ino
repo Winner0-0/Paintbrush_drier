@@ -8,7 +8,6 @@
   then "Calibration completed, insert brushes", then "Drying your brushes...", then
   "Brushes dried successfully :)"**/
 
-
 #include <IRremote.h> 
 #include <Adafruit_Sensor.h>
 #include <LiquidCrystal.h>
@@ -55,7 +54,7 @@ void setup() {
   lcd.print("Calibration underway");
   lcd.setCursor(0, 1);
   lcd.print("please wait");
-  humidity = dht.readHumidity();
+  humidity = 10; //dht.readHumidity();
   i = (int)round(humidity); // this is now the intial humidity value, will act as our origin value
   delay(6000); // DHT11 reaches humidity reading within 6 seconds (data sheet)
   lcd.clear();
@@ -68,7 +67,7 @@ void setup() {
 }
 
 void loop() {
-  humidity = dht.readHumidity();
+  humidity = 50; //dht.readHumidity();
   f = (int)round(humidity); // will get a new f value each time, i will remain unchanged
   if (irrecv.decode()){ //if signal is recieved
     if (irrecv.decodedIRData.flags){ // repeat signal if you hold the button
@@ -86,21 +85,25 @@ void loop() {
     digitalWrite(DIRA, HIGH);
     digitalWrite(DIRB, LOW);
     analogWrite(ENABLE, 255); //we want to have it at full speed for optimum drying
+    lcd.setCursor(0, 0);
+    lcd.print("Drying your brushes!");
     dryingStart = millis();
     dryingComplete = false;
   }else if (motorEnabled && (f <= i) && !dryingComplete){
     digitalWrite(ENABLE, LOW);
+    lcd.clear();
     lcd.setCursor(0, 0);
     lcd.print("Drying completed :)");
     dryingStart = millis(); //for 10 minute timer
     dryingComplete = true;
   }else if (!motorEnabled){
     digitalWrite(ENABLE, LOW);
+    lcd.clear();
+    lcd.print("System Sleep Mode");
   }
  if (dryingComplete && millis() - dryingStart >= 500000){
     motorEnabled = false;
     dryingComplete = false;
- }
+  }
   delay(2000);
 }
-   
