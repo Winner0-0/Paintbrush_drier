@@ -3,3 +3,7 @@ This is a prototype for a paintbrush drying system. The system would measure the
 The design is still in progress, see progress below:
 <img width="1550" height="992" alt="image" src="https://github.com/user-attachments/assets/4dbf97cd-6b73-4df7-8b95-c15aa93e491c" />
 
+Connection map below:
+![20250930_003337](https://github.com/user-attachments/assets/ee693f2b-cc23-44d8-921a-cd889348804b)
+
+
