@@ -8,9 +8,8 @@
   then "Calibration completed, insert brushes", then "Drying your brushes...", then
   "Brushes dried successfully :)"**/
 
-#include <RobotIRremote.h>
-#include <RobotIRremoteInt.h>
-#include <RobotIRremoteTools.h>
+
+#include <IRremote.h> 
 #include <Adafruit_Sensor.h>
 #include <LiquidCrystal.h>
 #include <DHT.h>
