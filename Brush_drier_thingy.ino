@@ -67,7 +67,7 @@ void setup() {
 }
 
 void loop() {
-  humidity = 50; //dht.readHumidity();
+  humidity = dht.readHumidity();
   f = (int)round(humidity); // will get a new f value each time, i will remain unchanged
   if (irrecv.decode()){ //if signal is recieved
     if (irrecv.decodedIRData.flags){ // repeat signal if you hold the button
